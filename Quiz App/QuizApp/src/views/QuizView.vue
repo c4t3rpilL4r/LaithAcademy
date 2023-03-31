@@ -1,76 +1,64 @@
 <script setup>
 import { useRoute } from "vue-router";
-import { ref } from "vue";
-import q from "../data/quizzes.json";
+import { ref, computed, watch } from "vue";
+import quizzes from "../data/quizzes.json";
+import QuizHeader from "../components/QuizHeader.vue";
+import Question from "../components/Question.vue";
+import Result from "../components/Result.vue";
 
 const route = useRoute();
-const quiz = q.find((quiz) => {
-	return quiz.id === parseInt(route.params.id);
+const quizId = parseInt(route.params.id);
+const quiz = quizzes.find((q) => {
+    return q.id === quizId;
 });
+const currentQuestionIndex = ref(0);
+const numberOfCorrectAnswers = ref(0);
+const showResults = ref(false);
+
+// const questionStatus = ref(
+//     `${currentQuestionIndex.value}/${quiz.questions.length}`
+// );
+
+// watch(currentQuestionIndex, () => {
+//     questionStatus.value = `${currentQuestionIndex.value}/${quiz.questions.length}`;
+// });
+
+const questionStatus = computed(
+    () => `${currentQuestionIndex.value}/${quiz.questions.length}`
+);
+const barPercentage = computed(
+    () => `${(currentQuestionIndex.value / quiz.questions.length) * 100}%`
+);
+
+const onOptionSelected = (isCorrect) => {
+    if (isCorrect) {
+        numberOfCorrectAnswers.value++;
+    }
+
+    showResults.value =
+        currentQuestionIndex.value === quiz.questions.length - 1;
+
+    currentQuestionIndex.value++;
+};
 </script>
 
 <template>
-	<div>
-		<header>
-			<h4>Question 1/3</h4>
-			<div class="bar">
-				<div class="completion"></div>
-			</div>
-		</header>
-
-		<div class="question-container">
-			<h1 class="question">{{ question.text }}</h1>
-		</div>
-
-		<div class="options-container">
-			<div
-				v-for="option in question.options"
-				:key="option.id"
-				class="option"
-			>
-				<p class="option-label"></p>
-				<div class="option-value">
-					<p></p>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div>
+        <QuizHeader
+            :questionStatus="questionStatus"
+            :barPercentage="barPercentage"
+        />
+        <div>
+            <Question
+                v-if="!showResults"
+                :question="quiz.questions[currentQuestionIndex]"
+                @selectOption="onOptionSelected"
+            />
+            <Result
+                v-else
+                :quizQuestionLength="quiz.questions.length"
+                :numberOfCorrectAnswers="numberOfCorrectAnswers"
+            />
+        </div>
+    </div>
 </template>
-
-<style scoped>
-header {
-	margin-top: 20px;
-}
-
-header h4 {
-	font-size: 30px;
-}
-
-.bar {
-	width: 300px;
-	height: 50px;
-	border: 3px solid bisque;
-}
-
-.completion {
-	height: 100%;
-	width: 0%;
-	background-color: bisque;
-}
-
-.question-container {
-	margin-top: 20px;
-}
-
-.question {
-	font-size: 40px;
-	margin-bottom: 20px;
-}
-
-.option {
-	display: flex;
-	margin-bottom: 20px;
-	cursor: pointer;
-	flex-direction: column;
-}
-</style>
