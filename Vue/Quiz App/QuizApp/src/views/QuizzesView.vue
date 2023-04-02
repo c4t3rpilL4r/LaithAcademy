@@ -2,6 +2,7 @@
 import q from "../data/quizzes.json";
 import { ref, watch } from "vue";
 import Card from "../components/Card.vue";
+import gsap from "gsap";
 
 const quizzes = ref(q);
 const search = ref("");
@@ -11,6 +12,24 @@ watch(search, () => {
 		quiz.name.toLowerCase().includes(search.value.toLowerCase())
 	);
 });
+
+const beforeEnter = (element) => {
+	// .card-enter-from
+	element.style.opacity = 0;
+	element.style.transform = "translateY(-100px)";
+};
+
+const enter = (element) => {
+	// .card-enter-to
+	gsap.to(element, {
+		opacity: 1,
+		y: 0,
+		duration: 0.3,
+		delay: element.dataset.index * 0.3,
+	});
+};
+
+const afterEnter = () => {};
 </script>
 
 <template>
@@ -21,7 +40,19 @@ watch(search, () => {
 		</header>
 
 		<div class="options-container">
-			<Card v-for="quiz in quizzes" :key="quiz.id" :quiz="quiz" />
+			<TransitionGroup
+				appear
+				@before-enter="beforeEnter"
+				@enter="enter"
+				@after-enter="afterEnter"
+			>
+				<Card
+					v-for="(quiz, index) in quizzes"
+					:key="quiz.id"
+					:quiz="quiz"
+					:data-index="index"
+				/>
+			</TransitionGroup>
 		</div>
 	</div>
 </template>
