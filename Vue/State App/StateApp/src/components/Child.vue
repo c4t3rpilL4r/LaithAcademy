@@ -1,8 +1,8 @@
 <script setup>
 import GrandChild from "./GrandChild.vue";
-import useNumbers from "../composables/useNumbers";
+import { useNumbersStore } from "../stores/numbers";
 
-const { numbers, addNumber } = useNumbers();
+const { numbers, addNumber } = useNumbersStore();
 </script>
 
 <template>
