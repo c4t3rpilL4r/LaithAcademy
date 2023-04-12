@@ -1,3 +1,9 @@
+OpenAI API key:
+
+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
+
+
+
 Vue Routing
 
 1. Define the rules.
