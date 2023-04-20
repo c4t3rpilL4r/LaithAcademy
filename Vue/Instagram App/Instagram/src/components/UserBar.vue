@@ -5,19 +5,21 @@ const props = defineProps(["username", "userInfo"]);
 <template>
 	<div class="userbar-container">
 		<div class="top-content">
-			<a-typography-title :level="2">{{ username }}</a-typography-title>
+			<a-typography-title :level="2">
+				{{ username }}
+			</a-typography-title>
 		</div>
 
 		<div class="bottom-content">
-			<a-typography-title :level="5"
-				>{{ userInfo.posts }} posts</a-typography-title
-			>
-			<a-typography-title :level="5"
-				>{{ userInfo.followers }} followers</a-typography-title
-			>
-			<a-typography-title :level="5"
-				>{{ userInfo.following }} following</a-typography-title
-			>
+			<a-typography-title :level="5">
+				{{ userInfo.posts }} posts
+			</a-typography-title>
+			<a-typography-title :level="5">
+				{{ userInfo.followers }} followers
+			</a-typography-title>
+			<a-typography-title :level="5">
+				{{ userInfo.following }} following
+			</a-typography-title>
 		</div>
 	</div>
 </template>
